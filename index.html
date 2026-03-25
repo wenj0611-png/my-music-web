@@ -3,199 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的音乐专辑橱窗</title>
+    <title>LE SSERAFIM MUSIC BOX</title>
     <style>
-        :root {
-            --primary-color: #1db954; /* Spotify绿 */
-            --bg-color: #121212;
-            --card-bg: #181818;
-            --text-color: #ffffff;
-        }
-
-        body {
-            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
+        :root { --primary: #ffffff; --bg: #000000; --card: #111111; --text: #ffffff; }
+        
+        body { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            background: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 60px 20px; 
+            display: flex; 
+            flex-direction: column; 
             align-items: center;
-            padding: 40px 20px;
+            -webkit-tap-highlight-color: transparent; /* 移除移动端点击阴影 */
         }
-
-        h1 { margin-bottom: 30px; font-weight: 800; letter-spacing: 1px; }
-
-        /* 专辑网格布局 */
-        .album-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 25px;
-            width: 100%;
-            max-width: 1000px;
-            margin-bottom: 50px;
-        }
-
-        .album-card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 8px;
-            transition: transform 0.3s, background 0.3s;
-            cursor: pointer;
+        
+        h1 { 
+            margin-bottom: 50px; 
+            font-weight: 900; 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
+            font-size: 28px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
 
-        .album-card:hover {
-            transform: translateY(-8px);
-            background: #282828;
+        /* 歌曲封面网格 */
+        .song-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); /* iPad上每行2个，非常整齐 */
+            gap: 25px; 
+            width: 100%; 
+            max-width: 500px; 
         }
 
-        .album-card img {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            object-fit: cover;
-            border-radius: 4px;
-            margin-bottom: 12px;
-        }
-
-        .album-card p { margin: 0; font-weight: bold; font-size: 14px; }
-
-        /* 留言板样式 */
-        .board-container {
-            width: 100%;
-            max-width: 600px;
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 6px;
-            border: none;
-            background: #333;
-            color: white;
-            outline: none;
-        }
-
-        button {
-            padding: 10px 20px;
-            background: var(--primary-color);
-            color: black;
-            border: none;
-            border-radius: 20px;
-            font-weight: bold;
+        .song-card { 
+            background: var(--card); 
+            padding: 10px; 
+            border-radius: 4px; 
+            text-align: center; 
+            transition: all 0.3s ease; 
             cursor: pointer;
+            border: 1px solid #222;
         }
 
-        #id-list {
-            list-style: none;
-            padding: 0;
-            max-height: 200px;
-            overflow-y: auto;
+        /* 点击时的缩放反馈 */
+        .song-card:active { transform: scale(0.96); background: #222; }
+
+        .song-card img { 
+            width: 100%; 
+            aspect-ratio: 1/1; 
+            object-fit: cover; 
+            margin-bottom: 12px;
+            filter: grayscale(20%); /* 稍微带点胶片感 */
         }
 
-        .visitor-item {
-            padding: 10px;
-            border-bottom: 1px solid #333;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between;
+        .song-card p { 
+            margin: 5px 0; 
+            font-weight: 700; 
+            font-size: 14px; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        /* 播放器状态指示器 */
-        #status-bar {
-            position: fixed;
-            bottom: 20px;
-            background: var(--primary-color);
-            color: black;
-            padding: 10px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            display: none;
+        /* 底部极简播放器 */
+        .player-fixed { 
+            position: fixed; 
+            bottom: 30px; 
+            left: 20px; 
+            right: 20px; 
+            background: rgba(255, 255, 255, 0.95); /* 亮色播放器与黑色背景对比 */
+            padding: 15px 20px; 
+            border-radius: 50px; 
+            display: none; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            text-align: center;
+            z-index: 100;
         }
+
+        .player-info { color: #000; font-size: 12px; font-weight: 800; margin-bottom: 5px; }
+
+        audio { width: 100%; height: 35px; }
+
     </style>
 </head>
 <body>
 
-    <h1>🎵 音乐时光机</h1>
+    <h1>LE SSERAFIM</h1>
 
-    <div class="album-grid">
-        <div class="album-card" onclick="playMusic('music1.mp3', '周杰伦 - 范特西')">
-            <img src="cover1.jpg" alt="封面" onerror="this.src='https://via.placeholder.com/200/282828/ffffff?text=Cover+1'">
-            <p>周杰伦 - 范特西</p>
-        </div>
-        <div class="album-card" onclick="playMusic('music2.mp3', '陈奕迅 - U87')">
-            <img src="cover2.jpg" alt="封面" onerror="this.src='https://via.placeholder.com/200/282828/ffffff?text=Cover+2'">
-            <p>陈奕迅 - U87</p>
-        </div>
+    <div class="song-grid">
+        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - EASY.mp3', 'EASY')">
+            <img src="LE SSERAFIM (르세라핌) - EASY.jpg" onerror="this.src='https://via.placeholder.com/400?text=EASY'">
+            <p>EASY</p>
         </div>
 
-    <div class="board-container">
-        <h3>访客展示板</h3>
-        <div class="input-group">
-            <input type="text" id="visitor-name" placeholder="输入你的ID留下足迹...">
-            <button onclick="addVisitor()">提交</button>
+        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - CRAZY.mp3', 'CRAZY')">
+            <img src="LE SSERAFIM (르세라핌) - CRAZY.jpg" onerror="this.src='https://via.placeholder.com/400?text=CRAZY'">
+            <p>CRAZY</p>
         </div>
-        <div id="id-list">
-            </div>
+
+        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - HOT.mp3', 'HOT')">
+            <img src="LE SSERAFIM (르세라핌) - HOT.jpg" onerror="this.src='https://via.placeholder.com/400?text=HOT'">
+            <p>HOT</p>
+        </div>
+
+        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌)&j-hope - SPAGHETTI.mp3', 'SPAGHETTI')">
+            <img src="LE SSERAFIM (르세라핌)&j-hope - SPAGHETTI.jpg" onerror="this.src='https://via.placeholder.com/400?text=SPAGHETTI'">
+            <p>SPAGHETTI</p>
+        </div>
     </div>
 
-    <div id="status-bar">正在播放: <span id="current-track"></span></div>
-    
-    <audio id="audio-player"></audio>
+    <div class="player-fixed" id="player-container">
+        <div class="player-info">PLAYING: <span id="cur-title"></span></div>
+        <audio id="audio-player" controls></audio>
+    </div>
 
     <script>
         const audio = document.getElementById('audio-player');
-        const statusBar = document.getElementById('status-bar');
-        const trackName = document.getElementById('current-track');
+        const container = document.getElementById('player-container');
+        const titleSpan = document.getElementById('cur-title');
 
-        // 播放功能
-        function playMusic(src, title) {
-            audio.src = src;
-            audio.play().catch(e => {
-                alert("播放失败：请确保文件夹中有 " + src + " 文件！");
-            });
-            statusBar.style.display = 'block';
-            trackName.innerText = title;
+        function playSong(file, name) {
+            // 对包含特殊字符、括号、空格的文件名进行安全编码
+            const encodedFile = encodeURI(file);
+            titleSpan.innerText = name;
+            audio.src = encodedFile;
+            container.style.display = 'block';
+            audio.play();
         }
-
-        // 留言板功能
-        function addVisitor() {
-            const input = document.getElementById('visitor-name');
-            const name = input.value.trim();
-            if (!name) return;
-
-            // 获取现有数据
-            let visitors = JSON.parse(localStorage.getItem('visitors') || '[]');
-            visitors.unshift({name: name, time: new Date().toLocaleTimeString()});
-            
-            // 保存并刷新
-            localStorage.setItem('visitors', JSON.stringify(visitors));
-            input.value = '';
-            renderVisitors();
-        }
-
-        function renderVisitors() {
-            const list = document.getElementById('id-list');
-            const visitors = JSON.parse(localStorage.getItem('visitors') || '[]');
-            list.innerHTML = visitors.map(v => `
-                <div class="visitor-item">
-                    <span>👤 ${v.name}</span>
-                    <span style="color: #888; font-size: 12px;">${v.time}</span>
-                </div>
-            `).join('');
-        }
-
-        // 初始化加载留言
-        renderVisitors();
     </script>
 </body>
 </html>
