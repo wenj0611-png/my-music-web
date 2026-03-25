@@ -7,13 +7,15 @@
     <style>
         :root { --primary: #fe2c55; --bg: #000000; --text: #ffffff; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; margin-top: 20px; }
+        h1 { margin-bottom: 40px; font-weight: 900; letter-spacing: 2px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
         .card { background: #111; padding: 10px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #222; }
-        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
-        /* 让播放器非常显眼，方便你点击 */
-        .player { position: fixed; bottom: 30px; left: 15px; right: 15px; background: #ffffff; padding: 25px; border-radius: 50px; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 9999; }
-        .info { color: #000; font-size: 14px; font-weight: bold; margin-bottom: 10px; text-align: center; }
-        audio { width: 100%; height: 50px; }
+        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+        .card p { margin: 5px 0; font-weight: bold; font-size: 14px; text-transform: uppercase; }
+        /* 播放器调整 */
+        .player { position: fixed; bottom: 30px; left: 20px; right: 20px; background: #e0e0e0; padding: 15px 20px; border-radius: 40px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
+        .info { color: #000; font-size: 12px; font-weight: bold; margin-bottom: 8px; text-align: center; }
+        audio { width: 100%; height: 40px; }
     </style>
 </head>
 <body>
@@ -36,7 +38,7 @@
     </div>
 
     <div class="player" id="player-bar">
-        <div class="info">⚠️ 请点击下方【播放按钮】按钮启动：<br><span id="song-title" style="color:#fe2c55"></span></div>
+        <div class="info">NOW PLAYING: <span id="song-title"></span></div>
         <audio id="main-audio" controls preload="auto"></audio>
     </div>
 
@@ -46,17 +48,23 @@
         const title = document.getElementById('song-title');
 
         function playSong(file, name) {
-            // 每次点击图片，都强制重置并显示
+            // 1. 先显示播放条
             bar.style.display = 'block';
             title.innerText = name;
             
+            // 2. 重新加载音频
             audio.src = file;
-            audio.load(); // 强制重新加载
+            audio.load(); // 强制加载新资源
+            
+            // 3. 尝试播放
+            var playPromise = audio.play();
 
-            // 尝试自动播放，如果不行（iPad拦截），用户就得点一下下面的白色条
-            audio.play().catch(e => {
-                console.log("浏览器拦截了自动播放，请手动点击播放键");
-            });
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log("播放被拦截，需要手动点击播放按钮");
+                    // 这种情况通常是因为 iPad 的静音模式或权限，用户点一下音频条上的播放键即可
+                });
+            }
         }
     </script>
 </body>
