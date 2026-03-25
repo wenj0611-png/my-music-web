@@ -3,18 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LE SSERAFIM</title>
+    <title>LE SSERAFIM BOX</title>
     <style>
         :root { --primary: #fe2c55; --bg: #000000; --text: #ffffff; }
         body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-        h1 { margin-bottom: 40px; font-weight: 900; letter-spacing: 2px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
+        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; margin-top: 20px; }
         .card { background: #111; padding: 10px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #222; }
-        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-        .card p { margin: 5px 0; font-weight: bold; font-size: 14px; text-transform: uppercase; }
-        .player { position: fixed; bottom: 30px; left: 20px; right: 20px; background: #f0f0f0; padding: 15px 20px; border-radius: 40px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
-        .info { color: #000; font-size: 12px; font-weight: bold; margin-bottom: 8px; text-align: center; }
-        audio { width: 100%; height: 40px; }
+        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; }
+        /* 让播放器非常显眼，方便你点击 */
+        .player { position: fixed; bottom: 30px; left: 15px; right: 15px; background: #ffffff; padding: 25px; border-radius: 50px; display: none; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 9999; }
+        .info { color: #000; font-size: 14px; font-weight: bold; margin-bottom: 10px; text-align: center; }
+        audio { width: 100%; height: 50px; }
     </style>
 </head>
 <body>
@@ -37,7 +36,7 @@
     </div>
 
     <div class="player" id="player-bar">
-        <div class="info">NOW PLAYING: <span id="song-title"></span></div>
+        <div class="info">⚠️ 请点击下方【播放按钮】按钮启动：<br><span id="song-title" style="color:#fe2c55"></span></div>
         <audio id="main-audio" controls preload="auto"></audio>
     </div>
 
@@ -47,86 +46,16 @@
         const title = document.getElementById('song-title');
 
         function playSong(file, name) {
-            // 1. 显示播放条
+            // 每次点击图片，都强制重置并显示
             bar.style.display = 'block';
             title.innerText = name;
             
-            // 2. 只有当歌曲切换时才重新加载
-            if (audio.src.indexOf(file) === -1) {
-                audio.src = file;
-                audio.load();
-            }
-            
-            // 3. 尝试播放，如果报错也不弹窗，让用户手动点播放键
-            audio.play().catch(function(error) {
-                console.log("等待用户手动点击播放");
-            });
-        }
-    </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LE SSERAFIM</title>
-    <style>
-        :root { --primary: #fe2c55; --bg: #000000; --text: #ffffff; }
-        body { font-family: -apple-system, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
-        h1 { margin-bottom: 40px; font-weight: 900; letter-spacing: 2px; }
-        .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
-        .card { background: #111; padding: 10px; border-radius: 12px; text-align: center; cursor: pointer; border: 1px solid #222; }
-        .card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
-        .card p { margin: 5px 0; font-weight: bold; font-size: 14px; text-transform: uppercase; }
-        .player { position: fixed; bottom: 30px; left: 20px; right: 20px; background: #f0f0f0; padding: 15px 20px; border-radius: 40px; display: none; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100; }
-        .info { color: #000; font-size: 12px; font-weight: bold; margin-bottom: 8px; text-align: center; }
-        audio { width: 100%; height: 40px; }
-    </style>
-</head>
-<body>
+            audio.src = file;
+            audio.load(); // 强制重新加载
 
-    <h1>LE SSERAFIM</h1>
-
-    <div class="grid">
-        <div class="card" onclick="playSong('EASY.mp3', 'EASY')">
-            <img src="EASY.jpeg">
-            <p>EASY</p>
-        </div>
-        <div class="card" onclick="playSong('CRAZY.mp3', 'CRAZY')">
-            <img src="CRAZY.jpeg">
-            <p>CRAZY</p>
-        </div>
-        <div class="card" onclick="playSong('HOT.mp3', 'HOT')">
-            <img src="HOT.jpeg">
-            <p>HOT</p>
-        </div>
-    </div>
-
-    <div class="player" id="player-bar">
-        <div class="info">NOW PLAYING: <span id="song-title"></span></div>
-        <audio id="main-audio" controls preload="auto"></audio>
-    </div>
-
-    <script>
-        const audio = document.getElementById('main-audio');
-        const bar = document.getElementById('player-bar');
-        const title = document.getElementById('song-title');
-
-        function playSong(file, name) {
-            // 1. 显示播放条
-            bar.style.display = 'block';
-            title.innerText = name;
-            
-            // 2. 只有当歌曲切换时才重新加载
-            if (audio.src.indexOf(file) === -1) {
-                audio.src = file;
-                audio.load();
-            }
-            
-            // 3. 尝试播放，如果报错也不弹窗，让用户手动点播放键
-            audio.play().catch(function(error) {
-                console.log("等待用户手动点击播放");
+            // 尝试自动播放，如果不行（iPad拦截），用户就得点一下下面的白色条
+            audio.play().catch(e => {
+                console.log("浏览器拦截了自动播放，请手动点击播放键");
             });
         }
     </script>
