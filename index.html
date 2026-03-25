@@ -3,82 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LE SSERAFIM MUSIC BOX</title>
+    <title>LE SSERAFIM BOX</title>
     <style>
         :root { --primary: #ffffff; --bg: #000000; --card: #111111; --text: #ffffff; }
-        
-        body { 
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
-            background: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding: 60px 20px; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        h1 { 
-            margin-bottom: 50px; 
-            font-weight: 900; 
-            letter-spacing: 4px; 
-            text-transform: uppercase; 
-            font-size: 28px;
-            text-align: center;
-        }
-
-        .song-grid { 
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 25px; 
-            width: 100%; 
-            max-width: 500px; 
-        }
-
-        .song-card { 
-            background: var(--card); 
-            padding: 10px; 
-            border-radius: 4px; 
-            text-align: center; 
-            transition: all 0.3s ease; 
-            cursor: pointer;
-            border: 1px solid #222;
-        }
-
-        .song-card:active { transform: scale(0.96); background: #222; }
-
-        .song-card img { 
-            width: 100%; 
-            aspect-ratio: 1/1; 
-            object-fit: cover; 
-            margin-bottom: 12px;
-        }
-
-        .song-card p { 
-            margin: 5px 0; 
-            font-weight: 700; 
-            font-size: 14px; 
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .player-fixed { 
-            position: fixed; 
-            bottom: 30px; 
-            left: 20px; 
-            right: 20px; 
-            background: rgba(255, 255, 255, 0.95); 
-            padding: 15px 20px; 
-            border-radius: 50px; 
-            display: none; 
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-            text-align: center;
-            z-index: 100;
-        }
-
-        .player-info { color: #000; font-size: 12px; font-weight: 800; margin-bottom: 5px; }
-        audio { width: 100%; height: 35px; }
+        body { font-family: sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 40px 20px; display: flex; flex-direction: column; align-items: center; }
+        h1 { margin-bottom: 40px; font-weight: 900; letter-spacing: 2px; }
+        .song-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 100%; max-width: 500px; }
+        .song-card { background: var(--card); padding: 10px; border-radius: 8px; text-align: center; cursor: pointer; border: 1px solid #222; }
+        .song-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 4px; margin-bottom: 10px; }
+        .song-card p { margin: 5px 0; font-weight: bold; font-size: 14px; }
+        .player-fixed { position: fixed; bottom: 30px; left: 20px; right: 20px; background: white; padding: 15px; border-radius: 40px; display: none; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .player-info { color: #000; font-size: 12px; font-weight: bold; margin-bottom: 5px; }
+        audio { width: 100%; height: 30px; }
     </style>
 </head>
 <body>
@@ -86,29 +22,24 @@
     <h1>LE SSERAFIM</h1>
 
     <div class="song-grid">
-        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - EASY.mp3', 'EASY')">
-            <img src="LE SSERAFIM (르세라핌) - EASY.jpeg" onerror="this.src='https://via.placeholder.com/400?text=EASY'">
-            <p>EASY</p>
-        </div>
-
         <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - CRAZY.mp3', 'CRAZY')">
-            <img src="LE SSERAFIM (르세라핌) - CRAZY.jpeg" onerror="this.src='https://via.placeholder.com/400?text=CRAZY'">
+            <img src="LE SSERAFIM (르세라핌) - CRAZY.jpeg" onerror="console.log('CRAZY图片加载失败')">
             <p>CRAZY</p>
         </div>
 
-        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - HOT.mp3', 'HOT')">
-            <img src="LE SSERAFIM (르세라핌) - HOT.jpeg" onerror="this.src='https://via.placeholder.com/400?text=HOT'">
-            <p>HOT</p>
+        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - EASY.mp3', 'EASY')">
+            <img src="LE SSERAFIM (르세라핌) - EASY.jpeg" onerror="console.log('EASY图片加载失败')">
+            <p>EASY</p>
         </div>
 
-        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌)&j-hope - SPAGHETTI.mp3', 'SPAGHETTI')">
-            <img src="LE SSERAFIM (르세라핌)&j-hope - SPAGHETTI.jpeg" onerror="this.src='https://via.placeholder.com/400?text=SPAGHETTI'">
-            <p>SPAGHETTI</p>
+        <div class="song-card" onclick="playSong('LE SSERAFIM (르세라핌) - HOT.mp3', 'HOT')">
+            <img src="LE SSERAFIM (르세라핌) - HOT.jpeg" onerror="console.log('HOT图片加载失败')">
+            <p>HOT</p>
         </div>
     </div>
 
     <div class="player-fixed" id="player-container">
-        <div class="player-info">PLAYING: <span id="cur-title"></span></div>
+        <div class="player-info">NOW PLAYING: <span id="cur-title"></span></div>
         <audio id="audio-player" controls></audio>
     </div>
 
@@ -118,12 +49,12 @@
         const titleSpan = document.getElementById('cur-title');
 
         function playSong(file, name) {
-            // encodeURI 会处理文件名中的空格和特殊字符
+            // 使用 encodeURI 处理文件名中的韩文和空格
             const encodedFile = encodeURI(file);
             titleSpan.innerText = name;
             audio.src = encodedFile;
             container.style.display = 'block';
-            audio.play().catch(e => console.error("播放失败，请检查文件名是否准确:", file));
+            audio.play().catch(e => alert("播放失败，请确保文件名完全一致"));
         }
     </script>
 </body>
