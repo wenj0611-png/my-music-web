@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的音乐专辑橱窗</title>
+    <style>
+        :root {
+            --primary-color: #1db954; /* Spotify绿 */
+            --bg-color: #121212;
+            --card-bg: #181818;
+            --text-color: #ffffff;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        h1 { margin-bottom: 30px; font-weight: 800; letter-spacing: 1px; }
+
+        /* 专辑网格布局 */
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 25px;
+            width: 100%;
+            max-width: 1000px;
+            margin-bottom: 50px;
+        }
+
+        .album-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            transition: transform 0.3s, background 0.3s;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .album-card:hover {
+            transform: translateY(-8px);
+            background: #282828;
+        }
+
+        .album-card img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+
+        .album-card p { margin: 0; font-weight: bold; font-size: 14px; }
+
+        /* 留言板样式 */
+        .board-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 6px;
+            border: none;
+            background: #333;
+            color: white;
+            outline: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: var(--primary-color);
+            color: black;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #id-list {
+            list-style: none;
+            padding: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .visitor-item {
+            padding: 10px;
+            border-bottom: 1px solid #333;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* 播放器状态指示器 */
+        #status-bar {
+            position: fixed;
+            bottom: 20px;
+            background: var(--primary-color);
+            color: black;
+            padding: 10px 25px;
+            border-radius: 30px;
+            font-weight: bold;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>🎵 音乐时光机</h1>
+
+    <div class="album-grid">
+        <div class="album-card" onclick="playMusic('music1.mp3', '周杰伦 - 范特西')">
+            <img src="cover1.jpg" alt="封面" onerror="this.src='https://via.placeholder.com/200/282828/ffffff?text=Cover+1'">
+            <p>周杰伦 - 范特西</p>
+        </div>
+        <div class="album-card" onclick="playMusic('music2.mp3', '陈奕迅 - U87')">
+            <img src="cover2.jpg" alt="封面" onerror="this.src='https://via.placeholder.com/200/282828/ffffff?text=Cover+2'">
+            <p>陈奕迅 - U87</p>
+        </div>
+        </div>
+
+    <div class="board-container">
+        <h3>访客展示板</h3>
+        <div class="input-group">
+            <input type="text" id="visitor-name" placeholder="输入你的ID留下足迹...">
+            <button onclick="addVisitor()">提交</button>
+        </div>
+        <div id="id-list">
+            </div>
+    </div>
+
+    <div id="status-bar">正在播放: <span id="current-track"></span></div>
+    
+    <audio id="audio-player"></audio>
+
+    <script>
+        const audio = document.getElementById('audio-player');
+        const statusBar = document.getElementById('status-bar');
+        const trackName = document.getElementById('current-track');
+
+        // 播放功能
+        function playMusic(src, title) {
+            audio.src = src;
+            audio.play().catch(e => {
+                alert("播放失败：请确保文件夹中有 " + src + " 文件！");
+            });
+            statusBar.style.display = 'block';
+            trackName.innerText = title;
+        }
+
+        // 留言板功能
+        function addVisitor() {
+            const input = document.getElementById('visitor-name');
+            const name = input.value.trim();
+            if (!name) return;
+
+            // 获取现有数据
+            let visitors = JSON.parse(localStorage.getItem('visitors') || '[]');
+            visitors.unshift({name: name, time: new Date().toLocaleTimeString()});
+            
+            // 保存并刷新
+            localStorage.setItem('visitors', JSON.stringify(visitors));
+            input.value = '';
+            renderVisitors();
+        }
+
+        function renderVisitors() {
+            const list = document.getElementById('id-list');
+            const visitors = JSON.parse(localStorage.getItem('visitors') || '[]');
+            list.innerHTML = visitors.map(v => `
+                <div class="visitor-item">
+                    <span>👤 ${v.name}</span>
+                    <span style="color: #888; font-size: 12px;">${v.time}</span>
+                </div>
+            `).join('');
+        }
+
+        // 初始化加载留言
+        renderVisitors();
+    </script>
+</body>
+</html>
